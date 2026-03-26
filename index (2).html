@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDEE của Phúc | Tìm ra chỉ số của bạn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #ffffff; --text: #1a1a1a; --secondary: #666; --input: #f3f3f1;
+            --accent: #000; --border: #ddd; --highlight: #fffbe6; --success: #27ae60;
+        }
+
+        body { 
+            font-family: 'Be Vietnam Pro', sans-serif; 
+            background: var(--bg); color: var(--text); 
+            display: flex; justify-content: center; 
+            padding: 40px 20px; margin: 0; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { width: 100%; max-width: 600px; }
+        .header-flex { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
+        .coach-badge { background: var(--accent); color: white; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        
+        h2 { font-size: 34px; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; line-height: 1.2; text-align: center; }
+        .card { background: var(--bg); border: 1px solid var(--border); padding: 25px; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        input, select { 
+            font-family: 'Be Vietnam Pro', sans-serif;
+            width: 100%; padding: 12px; border: 2px solid transparent; border-radius: 8px; 
+            background: var(--input); color: var(--text); font-size: 16px; box-sizing: border-box; margin-bottom: 15px; 
+        }
+        input:focus { border-color: var(--success); outline: none; }
+
+        .radio-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .radio-box { flex: 1; padding: 15px; border: 1px solid var(--border); border-radius: 8px; text-align: center; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; }
+        .radio-box.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .checkbox-group { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 15px; }
+        .check-item { 
+            display: flex; align-items: center; gap: 12px; font-size: 15px; 
+            cursor: pointer; background: var(--input); padding: 16px; 
+            border-radius: 12px; border: 2px solid transparent; transition: 0.2s;
+        }
+        .check-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--success); flex-shrink: 0; }
+        .check-item:has(input:checked) { border-color: var(--success); background: rgba(39, 174, 96, 0.08); font-weight: 600; }
+
+        .cta-btn { 
+            font-family: 'Be Vietnam Pro', sans-serif;
+            width: 100%; padding: 20px; background: var(--success); color: white; border: none; 
+            border-radius: 12px; font-size: 18px; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 10px; 
+        }
+        .cta-btn:active { transform: scale(0.98); }
+        
+        .result-box { display: none; animation: slideUp 0.5s ease; border: 3px solid var(--accent); padding: 30px; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        hr { border: 0; border-top: 1px solid var(--border); margin: 30px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-flex">
+        <span class="coach-badge">Online Coaching Tool</span>
+    </div>
+
+    <h2>Lộ trình vóc dáng<br>dành riêng cho bạn</h2>
+    
+    <div class="card">
+        <label>Họ và Tên</label>
+        <input type="text" id="fullname" placeholder="VD: Nguyễn Văn A">
+
+        <label>Số điện thoại (Zalo)</label>
+        <input type="tel" id="phone" placeholder="VD: 090xxxxxxx">
+
+        <hr style="margin: 15px 0;">
+
+        <label>Mục tiêu của bạn</label>
+        <select id="goal">
+            <option value="Duy trì vóc dáng">Duy trì vóc dáng</option>
+            <option value="Giảm mỡ nhanh">Giảm mỡ </option>
+            <option value="Xây dựng cơ bắp">Xây dựng cơ bắp </option>
+        </select>
+
+        <label>Trình độ tập luyện</label>
+        <div class="radio-group">
+            <div class="radio-box active" id="p-low" onclick="setProtein('Người mới', 'low')">Người mới</div>
+            <div class="radio-box" id="p-high" onclick="setProtein('Có kinh nghiệm', 'high')">Có kinh nghiệm</div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;"><label>Cân nặng (kg)</label><input type="number" id="weight" placeholder="70"></div>
+            <div style="flex: 1;"><label>Chiều cao (cm)</label><input type="number" id="height" placeholder="170"></div>
+        </div>
+        
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;"><label>Tuổi</label><input type="number" id="age" placeholder="25"></div>
+            <div style="flex: 1;"><label>Giới tính</label>
+                <select id="gender"><option value="Nam">Nam</option><option value="Nữ">Nữ</option></select>
+            </div>
+        </div>
+
+        <label>Mức độ vận động</label>
+        <select id="activity">
+            <option value="1.2">Ít vận động (Ngồi nhiều, < 5k bước, không tập luyện)</option>
+            <option value="1.375">Vận động nhẹ (Di chuyển nhiều, 5k-8k bước, tập 1-3 buổi/tuần)</option>
+            <option value="1.55">Vận động vừa (Năng động, > 10k bước, tập gym 3-5 buổi cường độ cao)</option>
+            <option value="1.725">Vận động nặng (Lao động tay chân, tập thể thao hăng say 6-7 buổi/tuần)</option>
+        </select>
+
+        <button class="cta-btn" onclick="calculate()" style="background: var(--accent);">XEM KẾT QUẢ NGAY →</button>
+    </div>
+
+    <div id="result" class="card result-box">
+        <h3 style="text-align: center; margin: 0;">CHỈ SỐ CỦA BẠN</h3>
+        <div style="text-align: center; font-size: 52px; font-weight: 800; margin: 15px 0;">
+            <span id="total-cal">0</span> <small style="font-size: 14px;">kcal/ngày</small>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <div style="text-align: center; background: var(--input); padding: 15px; border-radius: 12px;"><small>Đạm (P)</small><br><b id="res-p" style="font-size: 18px;">0g</b></div>
+            <div style="text-align: center; background: var(--input); padding: 15px; border-radius: 12px;"><small>Béo (F)</small><br><b id="res-f" style="font-size: 18px;">0g</b></div>
+            <div style="text-align: center; background: var(--input); padding: 15px; border-radius: 12px;"><small>Bột (C)</small><br><b id="res-c" style="font-size: 18px;">0g</b></div>
+        </div>
+
+        <hr>
+
+        <h4 style="margin-bottom: 5px;">Khó khăn lớn nhất của bạn?</h4>
+        <div class="checkbox-group" id="pain-points">
+            <label class="check-item"><input type="checkbox" value="Hay thèm ăn vặt"> Hay thèm ăn vặt, đồ ngọt</label>
+            <label class="check-item"><input type="checkbox" value="Thiếu thời gian"> Quá bận rộn để chuẩn bị bữa ăn</label>
+            <label class="check-item"><input type="checkbox" value="Tập lâu không nét cơ"> Tập chăm nhưng không nét cơ</label>
+            <label class="check-item"><input type="checkbox" value="Thiếu động lực"> Cần người thúc đẩy mỗi ngày</label>
+        </div>
+
+        <div style="text-align: center; background: var(--highlight); padding: 25px; border-radius: 16px; border: 1px solid #ffe58f; margin-top: 30px;">
+            <p style="font-size: 15px; margin-bottom: 20px; font-weight: 700; color: #856404;">
+                Thông tin của bạn sẽ được gửi trực tiếp đến hệ thống của mình, chờ mình chút mình liên hệ liền nha.
+            </p>
+            <button class="cta-btn" id="final-btn" onclick="sendFinalData()">GỬI KẾT QUẢ CHO PHÚC</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGXl07I3FGzX3K1E3lxZxoLYkdcL9d61njAgbigeXQM5qC_gvSihI9C69UFgXLOtc/exec";
+
+    let proteinText = 'Người mới';
+    let proteinRatio = 1.6;
+
+    function setProtein(text, level) {
+        proteinText = text;
+        proteinRatio = (level === 'high') ? 1.8 : 1.6;
+        document.getElementById('p-low').classList.toggle('active', level === 'low');
+        document.getElementById('p-high').classList.toggle('active', level === 'high');
+    }
+
+    async function saveToGoogleSheet(data) {
+        if (!GOOGLE_SCRIPT_URL.includes("https")) return;
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        } catch (error) {
+            console.error("Lỗi gửi Data:", error);
+        }
+    }
+
+    function calculate() {
+        const name = document.getElementById('fullname').value;
+        const phone = document.getElementById('phone').value;
+        const w = parseFloat(document.getElementById('weight').value);
+        const h = parseFloat(document.getElementById('height').value);
+        const a = parseInt(document.getElementById('age').value);
+        const g = document.getElementById('gender').value;
+        const act = parseFloat(document.getElementById('activity').value);
+        const goal = document.getElementById('goal').value;
+
+        if (!name || !phone || !w || !h || !a) { 
+            alert("Vui lòng nhập đầy đủ Họ tên, SĐT và các chỉ số cơ thể!"); 
+            return; 
+        }
+
+        let bmr = 10 * w + 6.25 * h - 5 * a;
+        bmr = (g === 'Nam') ? bmr + 5 : bmr - 161;
+        let tdee = Math.round(bmr * act);
+
+        if (goal.includes('Giảm')) tdee -= 400;
+        else if (goal.includes('Xây dựng')) tdee += 400;
+
+        let p_grams = Math.round(w * proteinRatio);
+        let f_grams = Math.round((tdee * 0.25) / 9);
+        let c_grams = Math.round((tdee - (p_grams * 4) - (f_grams * 9)) / 4);
+
+        document.getElementById('total-cal').innerText = tdee.toLocaleString();
+        document.getElementById('res-p').innerText = p_grams + 'g';
+        document.getElementById('res-f').innerText = f_grams + 'g';
+        document.getElementById('res-c').innerText = c_grams + 'g';
+
+        document.getElementById('result').style.display = 'block';
+        window.scrollTo({ top: document.getElementById('result').offsetTop - 20, behavior: 'smooth' });
+        
+        // Đã bỏ captureAndSave() ở đây để không lưu trùng 2 hàng
+    }
+
+    function captureAndSave() {
+        const pains = [];
+        document.querySelectorAll('#pain-points input:checked').forEach(i => pains.push(i.value));
+        
+        const data = {
+            name: document.getElementById('fullname').value,
+            phone: document.getElementById('phone').value,
+            weight: document.getElementById('weight').value,
+            height: document.getElementById('height').value,
+            age: document.getElementById('age').value,
+            gender: document.getElementById('gender').value,
+            goal: document.getElementById('goal').value,
+            tdee: document.getElementById('total-cal').innerText,
+            macro: `${document.getElementById('res-p').innerText}P - ${document.getElementById('res-f').innerText}F - ${document.getElementById('res-c').innerText}C`,
+            pains: pains.join(', ')
+        };
+        saveToGoogleSheet(data);
+    }
+
+    function sendFinalData() {
+        // Chỉ gửi dữ liệu khi người dùng bấm nút xác nhận cuối cùng
+        captureAndSave();
+        
+        const btn = document.getElementById('final-btn');
+        btn.innerText = "ĐÃ GỬI THÀNH CÔNG ✓";
+        btn.style.background = "#27ae60";
+        btn.disabled = true;
+        
+        alert("Cảm ơn bạn! Kết quả đã được gửi cho Phúc. Phúc sẽ liên hệ với bạn sớm nhất qua số điện thoại đã đăng ký.");
+    }
+</script>
+</body>
+</html>
